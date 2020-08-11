@@ -16,8 +16,8 @@ class Service extends ServiceProvider
     public function boot()
     {
         Nova::serving(function (ServingNova $event) {
-            Nova::script('laravel-nova-many-to-one-polymorphic-relationship', __DIR__.'/../dist/js/field.js');
-            Nova::style('laravel-nova-many-to-one-polymorphic-relationship', __DIR__.'/../dist/css/field.css');
+            Nova::script('laravel-nova-morph-many-to-one', __DIR__.'/../../dist/js/field.js');
+            Nova::style('laravel-nova-morph-many-to-one', __DIR__.'/../../dist/css/field.css');
         });
     }
 
