@@ -243,13 +243,13 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['resourceName', 'field']
+    props: ['resourceName', 'field'],
+
+    mounted: function mounted() {
+        console.log(this.field);
+    }
 });
 
 /***/ }),
@@ -409,53 +409,51 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_nova___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_nova__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"], __WEBPACK_IMPORTED_MODULE_0_laravel_nova__["HandlesValidationErrors"]],
+	mixins: [__WEBPACK_IMPORTED_MODULE_0_laravel_nova__["FormField"], __WEBPACK_IMPORTED_MODULE_0_laravel_nova__["HandlesValidationErrors"]],
 
-    props: ['resourceName', 'resourceId', 'field'],
+	props: ['resourceName', 'resourceId', 'field'],
 
-    methods: {
-        /*
-         * Set the initial, internal value for the field.
-         */
-        setInitialValue: function setInitialValue() {
-            this.value = this.field.value || '';
-        },
+	mounted: function mounted() {
+		console.log(this.resourceName, this.resourceId, this.field, this.value);
+	},
 
+	computed: {
 
-        /**
-         * Fill the given FormData object with the field's internal value.
-         */
-        fill: function fill(formData) {
-            formData.append(this.field.attribute, this.value || '');
-        },
+		/**
+   * Do not show the type select option if this is the edit screen
+   * And we don't want the user to change the polymorphic type.
+   */
+		shouldShowTypeSelect: function shouldShowTypeSelect() {
+			return !(this.resourceId && this.field.hideTypeWhenUpdating);
+		},
 
 
-        /**
-         * Update the field's internal value.
-         */
-        handleChange: function handleChange(value) {
-            this.value = value;
-        }
-    }
+		/**
+   * Do not show the type select option if this is the edit screen
+   * And we don't want the user to change the polumorphic type.
+   */
+		shouldDisableTypeSelect: function shouldDisableTypeSelect() {
+			return this.resourceId && this.field.disableTypeWhenUpdating;
+		}
+	},
+
+	methods: {
+		fill: function fill(formData) {
+			var _this = this;
+
+			formData.append(this.field.attribute, this.value);
+
+			this.$children.forEach(function (component) {
+				if (component.field.attribute !== _this.field.attribute) {
+					component.field.fill(formData);
+				}
+			});
+		}
+	}
 });
 
 /***/ }),
@@ -27874,39 +27872,79 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "default-field",
-    { attrs: { field: _vm.field, errors: _vm.errors } },
+    "div",
     [
-      _c("template", { slot: "field" }, [
-        _c("input", {
+      _c(
+        "default-field",
+        {
           directives: [
             {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.value,
-              expression: "value"
+              name: "show",
+              rawName: "v-show",
+              value: _vm.shouldShowTypeSelect,
+              expression: "shouldShowTypeSelect"
             }
           ],
-          staticClass: "w-full form-control form-input form-input-bordered",
-          class: _vm.errorClasses,
-          attrs: {
-            id: _vm.field.name,
-            type: "text",
-            placeholder: _vm.field.name
-          },
-          domProps: { value: _vm.value },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.value = $event.target.value
-            }
-          }
-        })
-      ])
+          attrs: { field: _vm.field }
+        },
+        [
+          _c("template", { slot: "field" }, [
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.value,
+                    expression: "value"
+                  }
+                ],
+                staticClass: "w-full form-control form-select",
+                class: _vm.errorClasses,
+                attrs: {
+                  id: _vm.field.attribute,
+                  disabled: _vm.shouldDisableTypeSelect
+                },
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.value = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              _vm._l(_vm.field.options, function(option) {
+                return _c("option", {
+                  key: _vm.field.attribute + "-option-" + option.id,
+                  domProps: {
+                    value: option.id,
+                    textContent: _vm._s(option.name)
+                  }
+                })
+              }),
+              0
+            ),
+            _vm._v(" "),
+            _vm.hasError
+              ? _c("p", { staticClass: "my-2 text-danger" }, [
+                  _vm._v("\n\t\t\t\t\t" + _vm._s(_vm.firstError) + "\n\t\t\t\t")
+                ])
+              : _vm._e()
+          ])
+        ],
+        2
+      )
     ],
-    2
+    1
   )
 }
 var staticRenderFns = []

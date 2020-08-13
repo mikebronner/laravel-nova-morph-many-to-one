@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class MorphManyToOne extends MorphToMany
 {
+
     protected function addWhereConstraints()
     {
         parent::addWhereConstraints();
@@ -25,5 +26,11 @@ class MorphManyToOne extends MorphToMany
     public function newPivotQuery()
     {
         return parent::newPivotQuery()->take(1);
+    }
+
+    public function getResults()
+    {
+        return parent::getResults()->first()
+            ?: $this->getDefaultFor($this->parent);
     }
 }
