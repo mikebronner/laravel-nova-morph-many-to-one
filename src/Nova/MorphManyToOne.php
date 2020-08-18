@@ -52,14 +52,17 @@ class MorphManyToOne extends Field
             $result = $resource->{$attribute};
         }
 
-        return optional($result)->getKey();
+        if (! method_exists($result, "getKey")) {
+            return;
+        }
+
+        return $result->getKey();
     }
 
     protected function getResource($resource, string $attribute) : string
     {
         return collect(Nova::$resources)
             ->filter(function ($item) use ($resource, $attribute) {
-
                 return $resource->$attribute
                     && $item::$model === get_class($resource->$attribute)::model();
             })
