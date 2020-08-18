@@ -52,7 +52,7 @@ class MorphManyToOne extends Field
             $result = $resource->{$attribute};
         }
 
-        return $result->getKey();
+        return optional($result)->getKey();
     }
 
     protected function getResource($resource, string $attribute) : string
@@ -63,7 +63,8 @@ class MorphManyToOne extends Field
                 return $resource->$attribute
                     && $item::$model === get_class($resource->$attribute)::model();
             })
-            ->first();
+            ->first()
+            ?? "";
     }
 
     protected function addOptions($resource, string $attribute) : void

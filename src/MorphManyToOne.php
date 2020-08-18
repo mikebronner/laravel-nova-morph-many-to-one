@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class MorphManyToOne extends MorphToMany
 {
-
     protected function addWhereConstraints()
     {
         parent::addWhereConstraints();
@@ -30,7 +29,6 @@ class MorphManyToOne extends MorphToMany
 
     public function getResults()
     {
-        return parent::getResults()->first()
-            ?: $this->getDefaultFor($this->parent);
+        return parent::getResults()->first();
     }
 }
