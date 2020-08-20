@@ -38,6 +38,10 @@ class MorphManyToOne extends MorphToMany
             })
             ->first();
 
+        if (! $pivot) {
+            return;
+        }
+
         return $this->getModel()->find($pivot->{$pivot->getRelatedKey()});
     }
 }
