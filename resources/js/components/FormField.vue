@@ -6,10 +6,6 @@
 
         props: ['resourceName', 'resourceId', 'field'],
 
-        mounted: function () {
-            console.log(this.resourceName, this.resourceId, this.field, this.value);
-        },
-
 		computed: {
 
 			/**
